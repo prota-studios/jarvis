@@ -1,4 +1,4 @@
-module github.com/prota-studios/javis
+module github.com/prota-studios/jarvis
 
 go 1.16
 

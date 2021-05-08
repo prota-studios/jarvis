@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/prota-studios/javis/models"
+	"github.com/prota-studios/jarvis/models"
 )
 
 // ListRecordingsOKCode is the HTTP code returned for type ListRecordingsOK

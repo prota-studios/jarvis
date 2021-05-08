@@ -4,7 +4,7 @@ package restapi
 
 import (
 	"crypto/tls"
-	"github.com/prota-studios/javis/pkg/zoom"
+	"github.com/prota-studios/jarvis/pkg/zoom"
 	"github.com/go-openapi/swag"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/prota-studios/javis/restapi/operations"
+	"github.com/prota-studios/jarvis/restapi/operations"
 )
 
 //go:generate swagger generate server --target ../../jarvis --name Jarvis --spec ../swagger.yaml --principal interface{}

@@ -25,7 +25,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 	"golang.org/x/net/netutil"
 
-	"github.com/prota-studios/javis/restapi/operations"
+	"github.com/prota-studios/jarvis/restapi/operations"
 )
 
 const (

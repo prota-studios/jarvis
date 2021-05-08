@@ -5,6 +5,7 @@ ADD cmd /jarvis/cmd
 ADD models /jarvis/models
 ADD vendor /jarvis/vendor
 ADD restapi /jarvis/restapi
+ADD pkg /jarvis/pkg
 WORKDIR /jarvis
 RUN go build -o jarvis cmd/jarvis-server/main.go
 

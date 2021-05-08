@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/prota-studios/javis/models"
+	"github.com/prota-studios/jarvis/models"
 )
 
 // ListUpcomingMeetingsHandlerFunc turns a function with the right signature into a list upcoming meetings handler
