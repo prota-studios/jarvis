@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/prota-studios/jarvis/models"
-	"github.com/prota-studios/jarvis/restapi/operations"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/himalayan-institute/zoom-lib-golang"
+	"github.com/prota-studios/jarvis/models"
+	"github.com/prota-studios/jarvis/restapi/operations"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 	"os"
@@ -21,7 +21,7 @@ const defaultZoomDelay = 10
 type Config struct {
 	ZoomAPIKey    string        `long:"zoom-api-key" description:"Zoom API Key" required:"true" default:"" env:"ZOOM_API_KEY"`
 	ZoomAPISecret string        `long:"zoom-api-secret" description:"Zoom API Secret" required:"true" default:"" env:"ZOOM_API_SECRET"`
-	ZoomUserId    string        `long:"zoom-user-id" description:"Zoom User ID" required:"true" default:"9meQ5bpuTHOXXKs6I8Hw0A" env:"ZOOM_USER_ID"`
+	ZoomUserId    string        `long:"zoom-user-id" description:"Zoom User ID" required:"true" default:"" env:"ZOOM_USER_ID"`
 	ZoomDelay     time.Duration `long:"zoom-delay" description:"Zoom Ticker Delay" required:"true" default:"10s" env:"ZOOM_DELAY"`
 	DBType        string        `long:"db-type" description:"Database type" required:"true" default:"sqlite" env:"DB_TYPE"`
 	DBUrl         string        `long:"db-url" description:"Database connection url" required:"true" default:"db.sqlite" env:"DB_URL"`
