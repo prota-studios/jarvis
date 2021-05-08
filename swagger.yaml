@@ -1,0 +1,70 @@
+swagger: "2.0"
+info:
+  title: Jarvis
+  description: Jarvis handles your venture's adventures...
+  version: 1.0.0
+host: localhost
+produces:
+  - application/json
+consumes:
+  - application/json
+schemes:
+  - http
+basePath: /v1
+paths:
+  /zoom/meetings/upcoming:
+    get:
+      operationId: ListUpcomingMeetings
+      responses:
+        200:
+          description: List upcoming zoom meetings that Jarvis has been invited to
+          schema:
+            properties:
+              meetings:
+                type: array
+                items:
+                  $ref: "#/definitions/meeting"
+
+  /zoom/meetings/{id}:
+    get:
+      operationId: GetMeeting
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: Get a given Meeting
+          schema:
+            $ref: "#/definitions/meeting"
+  /zoom/recordings:
+    get:
+      operationId: ListRecordings
+      responses:
+        200:
+          description: List of recorded meetings
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/recording"
+definitions:
+  meeting:
+    properties:
+      id:
+        type: integer
+        description: ID of Meeting
+      name:
+        type: string
+        description: Name of Meeting
+      start:
+        type: string
+        description: Start time of meeting
+  recording:
+    properties:
+      id:
+        type: string
+        description: ID of Recording
+      meeting_id:
+        type: string
+        description: Id of Meeting that is Recorded
