@@ -6,8 +6,10 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Recording recording
@@ -16,14 +18,47 @@ import (
 type Recording struct {
 
 	// ID of Recording
-	ID string `json:"id,omitempty"`
+	// Required: true
+	ID *string `json:"id"`
 
 	// Id of Meeting that is Recorded
-	MeetingID string `json:"meeting_id,omitempty"`
+	// Required: true
+	MeetingID *string `json:"meeting_id"`
 }
 
 // Validate validates this recording
 func (m *Recording) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMeetingID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Recording) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Recording) validateMeetingID(formats strfmt.Registry) error {
+
+	if err := validate.Required("meeting_id", "body", m.MeetingID); err != nil {
+		return err
+	}
+
 	return nil
 }
 

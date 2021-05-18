@@ -3,7 +3,7 @@ info:
   title: Jarvis
   description: Jarvis handles your venture's adventures...
   version: 1.0.0
-host: localhost
+host: localhost:8080
 produces:
   - application/json
 consumes:
@@ -12,6 +12,37 @@ schemes:
   - http
 basePath: /v1
 paths:
+  /health:
+    get:
+      operationId: Health
+      responses:
+        200:
+          description: Health
+          
+  /dictations/status:
+    get:
+      operationId: DictationStatus
+      responses:
+        200:
+          description: Status response
+          schema:
+            $ref: "#/definitions/dictationStatus"
+  /dictations/start:
+    post:
+      operationId: Start
+      responses:
+        200:
+          description: Start Recording
+          schema:
+            $ref: "#/definitions/dictationStatus"
+  /dictations/stop:
+    post:
+      operationId: Stop
+      responses:
+        200:
+          description: Start Recording
+          schema:
+            $ref: "#/definitions/dictationStatus"
   /zoom/meetings/upcoming:
     get:
       operationId: ListUpcomingMeetings
@@ -50,6 +81,10 @@ paths:
               $ref: "#/definitions/recording"
 definitions:
   meeting:
+    required:
+      - id
+      - name
+      - start
     properties:
       id:
         type: integer
@@ -61,6 +96,9 @@ definitions:
         type: string
         description: Start time of meeting
   recording:
+    required:
+      - id
+      - meeting_id
     properties:
       id:
         type: string
@@ -68,3 +106,15 @@ definitions:
       meeting_id:
         type: string
         description: Id of Meeting that is Recorded
+  dictationStatus:
+    required:
+      - recording
+      - processing
+    properties:
+      recording:
+        type: boolean
+        description: Is Jarvis recording your room?
+      processing:
+        type: boolean
+        description: Processing
+

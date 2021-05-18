@@ -1,2 +1,5 @@
 .idea/
 jarvis.iml
+creds.json
+values.decrypted.yaml
+test.wav

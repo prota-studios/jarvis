@@ -3,59 +3,74 @@ kind: Deployment
 metadata:
   name: {{ include "jarvis.fullname" . }}
   labels:
-    {{- include "jarvis.labels" . | nindent 4 }}
+  {{- include "jarvis.labels" . | nindent 4 }}
 spec:
-{{- if not .Values.autoscaling.enabled }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-{{- end }}
+  {{- end }}
   selector:
     matchLabels:
-      {{- include "jarvis.selectorLabels" . | nindent 6 }}
+  {{- include "jarvis.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "jarvis.selectorLabels" . | nindent 8 }}
+    {{- include "jarvis.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jarvis.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- if .Values.zoom.enabled }}
+            - name: ZOOM_ENABLED
+              value: "{{ .Values.zoom.enabled }}"
+            {{- end }}
+            - name: ZOOM_API_KEY
+              value: {{ .Values.zoom.api_key }}
+            - name: HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ZOOM_API_SECRET
+              value: {{ .Values.zoom.api_secret }}
+            - name: ZOOM_USER_ID
+              value: {{ .Values.zoom.api_user_id }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /v1/health
+              port: 8080
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /v1/health
+              port: 8080
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+      {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+      {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+      {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- toYaml . | nindent 8 }}
+  {{- end }}

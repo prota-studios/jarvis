@@ -7,8 +7,19 @@ ADD vendor /jarvis/vendor
 ADD restapi /jarvis/restapi
 ADD pkg /jarvis/pkg
 WORKDIR /jarvis
-RUN go build -o jarvis cmd/jarvis-server/main.go
 
-FROM alpine:latest as run
+ARG SKAFFOLD_GO_GCFLAGS
+RUN echo "Go gcflags: ${SKAFFOLD_GO_GCFLAGS}"
+RUN go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -mod=readonly -v -o jarvis cmd/jarvis-server/main.go
+
+# Now create separate deployment image
+FROM gcr.io/distroless/base as run
+
+ENV GOTRACEBACK=single
+ENV PORT 8080
+ENV HOST 0.0.0.0
+
+#FROM alpine:latest as run
 COPY --from=build /jarvis/jarvis /jarvis
+
 ENTRYPOINT ["/jarvis"]

@@ -1,0 +1,17 @@
+zoom:
+    api_key: ENC[AES256_GCM,data:CIPOTx8PP1ouZYyr2sjjgKm5hQA6mw==,iv:E7vWv1d91MTDstEDIrO2HrJrZ50KAQRXSeBcQE6HQkg=,tag:VfAxk79mby4EFUAf+iizSQ==,type:str]
+    api_secret: ENC[AES256_GCM,data:mQ1cwKlYeHY/ILDj/vQm0IK5UUXOjMz8FykAOd8/J+rUelOa,iv:pA4w1YR/y8qcFehOad41drpVENxdm9f/Ex2HFmknRY8=,tag:+qjVL6mHjMjfVtmgA2nzBg==,type:str]
+    api_user_id: ENC[AES256_GCM,data:XfNKBDqa+0kExGyew8OhF2HHIjthuA==,iv:Rev6uUQ+o41BSex4JTsP7vbryFrlsp1U7n0PIgTaysc=,tag:cXPgqi6G/pBW2pTfPIz35w==,type:str]
+sops:
+    kms: []
+    gcp_kms:
+    -   resource_id: projects/prota-jarvis/locations/us/keyRings/jarvis-ring-1/cryptoKeys/jarvis-key-1
+        created_at: '2021-05-09T19:12:04Z'
+        enc: CiQAVZtEXJynHnGpI0+/DcGgT/J1+jJRmLKS/htp7ZuXLmwKIe4SYyphChQKDK0/yQtJ3Z+q6Es2WBCgiaCqAhIvCid4VS6qRTsV1daaN+mdyDNQvSZYXspdM63GsaF5AC3D+Vx13IMhkqAQmKXhvgQaGAoQrItY2gC0dxlYfUrt7pREoxCi0bvqDA==
+    azure_kv: []
+    hc_vault: []
+    lastmodified: '2021-05-09T19:37:20Z'
+    mac: ENC[AES256_GCM,data:2O12mZK3kHZb0yMQYVydP82CAVY+5zK4Lmts/M8m4teISa8PB+uXnFmBYyvyGhe098sFnfWAsaxk9E+1HGlRRuxNjr7U1pd5ECM2+dsTvgmpXa6gQTRgKYpBzwKuQpLeobK9QQJA0f68akwAMrQbHrSzwT5WgdIW6m2bhf06z6w=,iv:ZwUIX5MjV1pHwIc77YnPOQrRP/al/wYBbf1/owD2MKA=,tag:zKTjhd+cbl3RiiSfnw0R3g==,type:str]
+    pgp: []
+    unencrypted_suffix: _unencrypted
+    version: 3.6.1

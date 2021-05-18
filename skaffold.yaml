@@ -1,24 +1,22 @@
-apiVersion: skaffold/v1
+apiVersion: skaffold/v2beta14
 kind: Config
 build:
-  local:
-    useBuildkit: true
-    useDockerCLI: false
-    push: true
   artifacts:
     - image: gcr.io/prota-jarvis/jarvis
-
+  local:
+    push: true
+    useBuildkit: true
 deploy:
   helm:
     releases:
       - name: jarvis
         chartPath: ./charts/jarvis/
+        artifactOverrides:
+          image: gcr.io/prota-jarvis/jarvis
+        setValues:
+          imagePullSecrets[0].name: gcr-json-key
+        valuesFiles:
+          - values.decrypted.yaml
         imageStrategy:
           helm:
             explicitRegistry: false
-        values:
-          "image": gcr.io/prota-jarvis/jarvis
-
-        setValues:
-          "solr.authentication.adminPassword": "solrPassword"
-          "legalFrontend.ingress.hostname": agnes.demo

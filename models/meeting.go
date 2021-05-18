@@ -6,8 +6,10 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Meeting meeting
@@ -16,17 +18,64 @@ import (
 type Meeting struct {
 
 	// ID of Meeting
-	ID int64 `json:"id,omitempty"`
+	// Required: true
+	ID *int64 `json:"id"`
 
 	// Name of Meeting
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 
 	// Start time of meeting
-	Start string `json:"start,omitempty"`
+	// Required: true
+	Start *string `json:"start"`
 }
 
 // Validate validates this meeting
 func (m *Meeting) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStart(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Meeting) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Meeting) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Meeting) validateStart(formats strfmt.Registry) error {
+
+	if err := validate.Required("start", "body", m.Start); err != nil {
+		return err
+	}
+
 	return nil
 }
 

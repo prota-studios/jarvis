@@ -33,9 +33,58 @@ func init() {
     "title": "Jarvis",
     "version": "1.0.0"
   },
-  "host": "localhost",
+  "host": "localhost:8080",
   "basePath": "/v1",
   "paths": {
+    "/dictations/start": {
+      "post": {
+        "operationId": "Start",
+        "responses": {
+          "200": {
+            "description": "Start Recording",
+            "schema": {
+              "$ref": "#/definitions/dictationStatus"
+            }
+          }
+        }
+      }
+    },
+    "/dictations/status": {
+      "get": {
+        "operationId": "DictationStatus",
+        "responses": {
+          "200": {
+            "description": "Status response",
+            "schema": {
+              "$ref": "#/definitions/dictationStatus"
+            }
+          }
+        }
+      }
+    },
+    "/dictations/stop": {
+      "post": {
+        "operationId": "Stop",
+        "responses": {
+          "200": {
+            "description": "Start Recording",
+            "schema": {
+              "$ref": "#/definitions/dictationStatus"
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "Health",
+        "responses": {
+          "200": {
+            "description": "Health"
+          }
+        }
+      }
+    },
     "/zoom/meetings/upcoming": {
       "get": {
         "operationId": "ListUpcomingMeetings",
@@ -95,7 +144,28 @@ func init() {
     }
   },
   "definitions": {
+    "dictationStatus": {
+      "required": [
+        "recording",
+        "processing"
+      ],
+      "properties": {
+        "processing": {
+          "description": "Processing",
+          "type": "boolean"
+        },
+        "recording": {
+          "description": "Is Jarvis recording your room?",
+          "type": "boolean"
+        }
+      }
+    },
     "meeting": {
+      "required": [
+        "id",
+        "name",
+        "start"
+      ],
       "properties": {
         "id": {
           "description": "ID of Meeting",
@@ -112,6 +182,10 @@ func init() {
       }
     },
     "recording": {
+      "required": [
+        "id",
+        "meeting_id"
+      ],
       "properties": {
         "id": {
           "description": "ID of Recording",
@@ -141,9 +215,58 @@ func init() {
     "title": "Jarvis",
     "version": "1.0.0"
   },
-  "host": "localhost",
+  "host": "localhost:8080",
   "basePath": "/v1",
   "paths": {
+    "/dictations/start": {
+      "post": {
+        "operationId": "Start",
+        "responses": {
+          "200": {
+            "description": "Start Recording",
+            "schema": {
+              "$ref": "#/definitions/dictationStatus"
+            }
+          }
+        }
+      }
+    },
+    "/dictations/status": {
+      "get": {
+        "operationId": "DictationStatus",
+        "responses": {
+          "200": {
+            "description": "Status response",
+            "schema": {
+              "$ref": "#/definitions/dictationStatus"
+            }
+          }
+        }
+      }
+    },
+    "/dictations/stop": {
+      "post": {
+        "operationId": "Stop",
+        "responses": {
+          "200": {
+            "description": "Start Recording",
+            "schema": {
+              "$ref": "#/definitions/dictationStatus"
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "Health",
+        "responses": {
+          "200": {
+            "description": "Health"
+          }
+        }
+      }
+    },
     "/zoom/meetings/upcoming": {
       "get": {
         "operationId": "ListUpcomingMeetings",
@@ -203,7 +326,28 @@ func init() {
     }
   },
   "definitions": {
+    "dictationStatus": {
+      "required": [
+        "recording",
+        "processing"
+      ],
+      "properties": {
+        "processing": {
+          "description": "Processing",
+          "type": "boolean"
+        },
+        "recording": {
+          "description": "Is Jarvis recording your room?",
+          "type": "boolean"
+        }
+      }
+    },
     "meeting": {
+      "required": [
+        "id",
+        "name",
+        "start"
+      ],
       "properties": {
         "id": {
           "description": "ID of Meeting",
@@ -220,6 +364,10 @@ func init() {
       }
     },
     "recording": {
+      "required": [
+        "id",
+        "meeting_id"
+      ],
       "properties": {
         "id": {
           "description": "ID of Recording",

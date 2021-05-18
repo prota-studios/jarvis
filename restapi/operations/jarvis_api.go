@@ -42,14 +42,26 @@ func NewJarvisAPI(spec *loads.Document) *JarvisAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		DictationStatusHandler: DictationStatusHandlerFunc(func(params DictationStatusParams) middleware.Responder {
+			return middleware.NotImplemented("operation DictationStatus has not yet been implemented")
+		}),
 		GetMeetingHandler: GetMeetingHandlerFunc(func(params GetMeetingParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetMeeting has not yet been implemented")
+		}),
+		HealthHandler: HealthHandlerFunc(func(params HealthParams) middleware.Responder {
+			return middleware.NotImplemented("operation Health has not yet been implemented")
 		}),
 		ListRecordingsHandler: ListRecordingsHandlerFunc(func(params ListRecordingsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ListRecordings has not yet been implemented")
 		}),
 		ListUpcomingMeetingsHandler: ListUpcomingMeetingsHandlerFunc(func(params ListUpcomingMeetingsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ListUpcomingMeetings has not yet been implemented")
+		}),
+		StartHandler: StartHandlerFunc(func(params StartParams) middleware.Responder {
+			return middleware.NotImplemented("operation Start has not yet been implemented")
+		}),
+		StopHandler: StopHandlerFunc(func(params StopParams) middleware.Responder {
+			return middleware.NotImplemented("operation Stop has not yet been implemented")
 		}),
 	}
 }
@@ -85,12 +97,20 @@ type JarvisAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// DictationStatusHandler sets the operation handler for the dictation status operation
+	DictationStatusHandler DictationStatusHandler
 	// GetMeetingHandler sets the operation handler for the get meeting operation
 	GetMeetingHandler GetMeetingHandler
+	// HealthHandler sets the operation handler for the health operation
+	HealthHandler HealthHandler
 	// ListRecordingsHandler sets the operation handler for the list recordings operation
 	ListRecordingsHandler ListRecordingsHandler
 	// ListUpcomingMeetingsHandler sets the operation handler for the list upcoming meetings operation
 	ListUpcomingMeetingsHandler ListUpcomingMeetingsHandler
+	// StartHandler sets the operation handler for the start operation
+	StartHandler StartHandler
+	// StopHandler sets the operation handler for the stop operation
+	StopHandler StopHandler
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
@@ -167,14 +187,26 @@ func (o *JarvisAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.DictationStatusHandler == nil {
+		unregistered = append(unregistered, "DictationStatusHandler")
+	}
 	if o.GetMeetingHandler == nil {
 		unregistered = append(unregistered, "GetMeetingHandler")
+	}
+	if o.HealthHandler == nil {
+		unregistered = append(unregistered, "HealthHandler")
 	}
 	if o.ListRecordingsHandler == nil {
 		unregistered = append(unregistered, "ListRecordingsHandler")
 	}
 	if o.ListUpcomingMeetingsHandler == nil {
 		unregistered = append(unregistered, "ListUpcomingMeetingsHandler")
+	}
+	if o.StartHandler == nil {
+		unregistered = append(unregistered, "StartHandler")
+	}
+	if o.StopHandler == nil {
+		unregistered = append(unregistered, "StopHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -267,7 +299,15 @@ func (o *JarvisAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/dictations/status"] = NewDictationStatus(o.context, o.DictationStatusHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/zoom/meetings/{id}"] = NewGetMeeting(o.context, o.GetMeetingHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/health"] = NewHealth(o.context, o.HealthHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -276,6 +316,14 @@ func (o *JarvisAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/zoom/meetings/upcoming"] = NewListUpcomingMeetings(o.context, o.ListUpcomingMeetingsHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/dictations/start"] = NewStart(o.context, o.StartHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/dictations/stop"] = NewStop(o.context, o.StopHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

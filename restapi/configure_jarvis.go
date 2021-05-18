@@ -4,23 +4,22 @@ package restapi
 
 import (
 	"crypto/tls"
-	"github.com/prota-studios/jarvis/pkg/zoom"
-	"github.com/go-openapi/swag"
-	"github.com/sirupsen/logrus"
-	"net/http"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-
+	"github.com/go-openapi/swag"
+	"github.com/prota-studios/jarvis/pkg/jarvis"
+	"github.com/prota-studios/jarvis/pkg/zoom"
 	"github.com/prota-studios/jarvis/restapi/operations"
+	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 //go:generate swagger generate server --target ../../jarvis --name Jarvis --spec ../swagger.yaml --principal interface{}
 
 func configureFlags(api *operations.JarvisAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
-	opts := &zoom.Config{}
+	opts := &jarvis.Config{}
 	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
 		{
 			ShortDescription: "Config options",
@@ -40,31 +39,64 @@ func configureAPI(api *operations.JarvisAPI) http.Handler {
 	// Example:
 	// api.Logger = log.Printf
 
-	zcfg := api.CommandLineOptionsGroups[0].Options.(*zoom.Config)
+	cfg := api.CommandLineOptionsGroups[0].Options.(*jarvis.Config)
 
-	// Turn on teh Zoom Bot....
-	// TODO: make this a list of interfaces so we can be simplier here.
-	z := zoom.NewZoom(zcfg)
-	go z.Start()
+	// Turn on teh Server Bot....
+	j, err := jarvis.NewServer(cfg)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	go j.Start()
 
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
-	// api.UseRedoc()
+	//api.UseRedoc()
+	logrus.SetFormatter(&logrus.TextFormatter{
+		ForceColors: true,
+	})
 	api.Logger = logrus.Infof
+	if cfg.Debug {
+		api.Logger = logrus.Debugf
+	}
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.GetMeetingHandler = operations.GetMeetingHandlerFunc(func(params operations.GetMeetingParams) middleware.Responder {
-		return middleware.NotImplemented("operation operations.GetMeeting has not yet been implemented")
+	// Health
+	api.HealthHandler = operations.HealthHandlerFunc(func(params operations.HealthParams) middleware.Responder {
+		return operations.NewHealthOK()
 	})
-	api.ListUpcomingMeetingsHandler = operations.ListUpcomingMeetingsHandlerFunc(func(params operations.ListUpcomingMeetingsParams) middleware.Responder {
-		return z.ListUpcomingMeetings()
+
+	// Dictation
+	api.DictationStatusHandler = operations.DictationStatusHandlerFunc(func(params operations.DictationStatusParams) middleware.Responder {
+
+		return j.DictationStatus()
 	})
-	api.ListRecordingsHandler = operations.ListRecordingsHandlerFunc(func(params operations.ListRecordingsParams) middleware.Responder {
-		return middleware.NotImplemented("operation operations.ListRecordings has not yet been implemented")
+	api.StartHandler = operations.StartHandlerFunc(func(params operations.StartParams) middleware.Responder {
+
+		return j.StartDictation()
 	})
+
+	api.StopHandler = operations.StopHandlerFunc(func(params operations.StopParams) middleware.Responder {
+
+		return j.StopDictation()
+	})
+
+	// If Zoom is enabled, handle all those operations.
+	if cfg.ZoomEnabled {
+		z := zoom.NewServer(cfg.ZoomConfig)
+		go z.Start()
+		api.GetMeetingHandler = operations.GetMeetingHandlerFunc(func(params operations.GetMeetingParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.GetMeeting has not yet been implemented")
+		})
+		api.ListUpcomingMeetingsHandler = operations.ListUpcomingMeetingsHandlerFunc(func(params operations.ListUpcomingMeetingsParams) middleware.Responder {
+			return z.ListUpcomingMeetings()
+		})
+		api.ListRecordingsHandler = operations.ListRecordingsHandlerFunc(func(params operations.ListRecordingsParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.ListRecordings has not yet been implemented")
+		})
+	}
 
 	api.PreServerShutdown = func() {}
 
